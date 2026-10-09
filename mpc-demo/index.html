@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Interactive Model Predictive Control (MPC)</title>
+    <meta name="description" content="Interactive demo of Model Predictive Control on a double inverted pendulum with real-time obstacle avoidance, running in your browser (WebAssembly).">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="lang-switch" role="group" aria-label="Language / Langue">
+                <button type="button" data-lang="fr">FR</button><button type="button" data-lang="en">EN</button>
+            </div>
+            <h1 data-i18n="title">Interactive Model Predictive Control (MPC)</h1>
+        </header>
+
+        <div class="main-content">
+            <div class="visualization">
+                <div id="plot"></div>
+                <div id="loading" class="loading" role="status"><span class="spinner"></span><span id="loading-text" data-i18n="loading">Loading…</span></div>
+                <div id="notice" class="notice" data-i18n="notice">Solver failed: pendulum reset to its start</div>
+                <div class="actions run-row">
+                    <button id="btn-sim-toggle" class="btn btn-primary" disabled="disabled">Start Sim</button>
+                    <button id="btn-mpc-toggle" class="btn btn-primary" disabled="disabled">Start MPC</button>
+                </div>
+            </div>
+
+            <div class="controls">
+                <h2 data-i18n="parameters">Parameters</h2>
+
+                <div class="control-group">
+                    <label for="target_x" data-i18n="target_x">Tip Target X: <span id="target_x_val">-1.0</span></label>
+                    <input type="range" id="target_x" min="-2.0" max="2.0" step="0.1" value="-1.0">
+                </div>
+
+                <div class="control-group">
+                    <label for="target_y" data-i18n="target_y">Tip Target Y: <span id="target_y_val">1.0</span></label>
+                    <input type="range" id="target_y" min="-1.5" max="1.5" step="0.1" value="1.0">
+                </div>
+
+                <div class="control-group">
+                    <label for="obs_x" data-i18n="obs_x">Obstacle X: <span id="obs_x_val">0.0</span></label>
+                    <input type="range" id="obs_x" min="-2.0" max="2.0" step="0.1" value="0.0">
+                </div>
+
+                <div class="control-group">
+                    <label for="obs_y" data-i18n="obs_y">Obstacle Y: <span id="obs_y_val">1.0</span></label>
+                    <input type="range" id="obs_y" min="0.5" max="1.2" step="0.1" value="1.0">
+                </div>
+
+                
+                <ul class="legend" aria-label="Plot legend">
+                    <li data-i18n="legend_target"><svg viewBox="0 0 24 14" aria-hidden="true"><polygon points="12.0,1.3 13.5,5.4 17.9,5.6 14.5,8.3 15.6,12.5 12.0,10.1 8.4,12.5 9.5,8.3 6.1,5.6 10.5,5.4" fill="#f59e0b"/></svg>Tip target</li>
+                    <li data-i18n="legend_obstacle"><svg viewBox="0 0 24 14" aria-hidden="true"><circle cx="12" cy="7" r="6" fill="rgba(239,68,68,0.5)" stroke="#ef4444"/></svg>Obstacle</li>
+                    <li data-i18n="legend_force"><svg viewBox="0 0 24 14" aria-hidden="true" opacity="0.5"><line x1="2" y1="7" x2="17" y2="7" stroke="#f59e0b" stroke-width="3"/><polygon points="16,2.5 23,7 16,11.5" fill="#f59e0b"/></svg>Cart force</li>
+                    <li data-i18n="legend_prediction"><svg viewBox="0 0 24 14" aria-hidden="true"><g fill="none" stroke="rgba(59,130,246,0.45)" stroke-width="2"><polyline points="3,13 7,5 13,2"/><polyline points="9,13 13,5 19,2"/><polyline points="15,13 19,5 23,3"/></g></svg>Predicted motion</li>
+                </ul>
+
+                <div class="status-panel">
+                    <p data-i18n="sim">Sim: <span id="sim-status" class="status-off">Stopped</span></p>
+                    <p data-i18n="mpc">MPC: <span id="mpc-status" class="status-off">Stopped</span></p>
+                    <p data-i18n="force">Force u₀: <span id="u0-display">0.0 N</span></p>
+                </div>
+
+                <div class="status-panel perf-panel" hidden>
+                    <p>Solver: <span id="solver-status">-</span></p>
+                    <p>Variant: <span id="variant">measuring…</span></p>
+                    <p>Solve time (mean / p99): <span id="solve-time">-</span></p>
+                    <p>Deadline misses (&gt; 15 ms): <span id="misses">-</span></p>
+                    <p>Speed vs real time: <span id="speed">-</span></p>
+                    <p>Background solver: <span id="bg">-</span></p>
+                    <p>Resets after solver failure: <span id="resets">0</span></p>
+                    <span id="pick-detail" class="muted">Timing the controller variants on this device…</span>
+                    <div class="tuning" hidden>
+                        <div class="control-group">
+                            <label for="u_max">Max force: <span id="u_max_val">-</span> N</label>
+                            <input type="range" id="u_max" min="1" max="40" step="any">
+                        </div>
+                        <div class="control-group">
+                            <label for="cost_u">Force penalty: <span id="cost_u_val">-</span></label>
+                            <input type="range" id="cost_u" min="0" max="20" step="0.1">
+                        </div>
+                        <div class="control-group">
+                            <label for="cost_du">Change-in-force penalty: <span id="cost_du_val">-</span></label>
+                            <input type="range" id="cost_du" min="0" max="10" step="0.01">
+                        </div>
+                        <div class="control-group">
+                            <label for="horizon">Horizon N: <span id="horizon_val">-</span></label>
+                            <input type="range" id="horizon" min="0" max="0" step="1">
+                        </div>
+                        <div class="control-group">
+                            <label for="dt">First interval: <span id="dt_val">-</span> ms</label>
+                            <input type="range" id="dt" min="5" max="50" step="0.5">
+                        </div>
+                        <div class="control-group">
+                            <label for="growth">Interval growth: <span id="growth_val">-</span></label>
+                            <input type="range" id="growth" min="1" max="1.05" step="0.001">
+                        </div>
+                        <div class="control-group">
+                            <label for="d_cart">Cart damping: <span id="d_cart_val">-</span> N·s/m</label>
+                            <input type="range" id="d_cart" min="0" max="0.01" step="0.0001">
+                        </div>
+                        <div class="control-group">
+                            <label for="d_joint">Joint damping: <span id="d_joint_val">-</span> N·m·s/rad</label>
+                            <input type="range" id="d_joint" min="0" max="0.25" step="0.001">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="note" data-i18n="note">The controller has a single control input: the horizontal force on the cart. The pendulum's joints are not driven.</p>
+
+        <footer class="credits">
+            <span data-i18n="by">By</span> Francis Bilodeau · <a href="https://www.crvi.ca/" target="_blank" rel="noopener">CRVI</a> ·
+            <a href="gen/licenses.txt" target="_blank" rel="noopener" data-i18n="licences">Open-source licences</a>
+        </footer>
+    </div>
+
+    <script src="app.js?v=ef938bd"></script>
+</body>
+
+</html>

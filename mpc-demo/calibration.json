@@ -1,0 +1,10 @@
+{
+ "_doc": "Fixed input sequence, used by the page's per-device auto-pick (timed) and by web/test (WASM vs native C core). Starts from MPCConfig.x0 with MPC on at step 0; at each event's step k the parameters [target_x, target_y, obs_x, obs_y] change before that step. The obstacle is the demo video's; the switch at k = 60 moves the target across the obstacle (the hard solves).",
+ "steps": 200,
+ "warmup_steps": 80,
+ "events": [
+  {"k": 0, "params": [-0.6, 1.0, 0.6, 1.0]},
+  {"k": 60, "params": [1.5, 1.0, 0.6, 1.0]}
+ ],
+ "bg_solves": 8
+}

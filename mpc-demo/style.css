@@ -1,0 +1,439 @@
+:root {
+    --bg-color: #0f172a;
+    --panel-bg: #1e293b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+    --accent-danger: #ef4444;
+    --accent-danger-hover: #dc2626;
+    --border-color: #334155;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+header {
+    text-align: center;
+}
+
+header h1 {
+    font-size: clamp(0.8rem, 3.9vw, 2.2rem);
+    white-space: nowrap;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(to right, #60a5fa, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+header p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.visualization {
+    background: var(--panel-bg);
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--border-color);
+}
+
+#plot {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.controls {
+    background: var(--panel-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.controls h2 {
+    font-size: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.control-group label {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+}
+
+.control-group label span {
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    margin-top: -6px;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    background: var(--border-color);
+    border-radius: 2px;
+}
+
+input[type=range]:focus {
+    outline: none;
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+/* ---- Controller section ---- */
+.controller-section {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.controller-section h3 {
+    font-size: 1rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+}
+
+.controller-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.controller-label {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.controller-name {
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.controller-desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+/* ---- Buttons ---- */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.btn-controller {
+    padding: 0.55rem 1rem;
+    font-size: 0.9rem;
+    width: auto;
+    min-width: 110px;
+    flex-shrink: 0;
+}
+
+.btn-primary {
+    background-color: var(--accent);
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: var(--accent-hover);
+}
+
+.btn-danger {
+    background-color: var(--accent-danger);
+    color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background-color: var(--accent-danger-hover);
+}
+
+.btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* ---- Status panel ---- */
+.status-panel {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.status-panel p {
+    display: flex;
+    justify-content: space-between;
+    color: var(--text-muted);
+}
+
+.status-on {
+    font-weight: 600;
+    color: #10b981;
+}
+
+.status-off {
+    font-weight: 600;
+    color: #ef4444;
+}
+
+/* ---- Browser (WebAssembly) build additions ---- */
+/* The controls column is taller than today's: keep today's plot size instead of stretching. */
+.main-content {
+    align-items: start;
+}
+
+.visualization {
+    position: relative;
+}
+
+#plot {
+    height: auto;
+    aspect-ratio: 5 / 3.4;  /* x spans 5 m, y 3 m (+ axis margins): keeps the ±1.5 m height range */
+}
+
+.notice {
+    position: absolute;
+    top: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(239, 68, 68, 0.9);
+    color: white;
+    padding: 0.4rem 0.9rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s;
+}
+
+.notice.show {
+    opacity: 1;
+}
+
+.perf-panel {
+    font-size: 0.85rem;
+}
+
+.perf-panel .muted {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    line-height: 1.35;
+}
+
+@media (max-width: 800px) {
+    .container {
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+
+    .visualization {
+        min-height: 0;
+        padding: 0.5rem;
+    }
+
+}
+
+.perf-panel[hidden] {
+    display: none;
+}
+
+/* Start Sim and Start MPC side by side, right under the plot */
+.run-row .btn {
+    flex: 1;
+}
+
+/* Shown over the plot while the WebAssembly controller loads and is timed on this device */
+.loading {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    right: 1rem;
+    aspect-ratio: 5 / 3.4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    background: rgba(30, 41, 59, 0.85);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    z-index: 2;
+}
+
+.loading[hidden] {
+    display: none;
+}
+
+.spinner {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 4px solid rgba(96, 165, 250, 0.25);
+    border-top-color: #60a5fa;
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (max-width: 800px) {
+    .loading {
+        top: 0.5rem;
+        left: 0.5rem;
+        right: 0.5rem;
+    }
+}
+
+.tuning:not([hidden]) {  /* display: flex would override the hidden attribute */
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.legend {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.legend li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.legend svg {
+    width: 24px;
+    height: 14px;
+    flex: none;
+}
+
+.credits {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.credits a {
+    color: var(--text-muted);
+}
+
+.note {
+    max-width: 40rem;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.lang-switch {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+.lang-switch button {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--text-muted);
+    border-radius: 0.375rem;
+    padding: 0.1rem 0.5rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+.lang-switch button.active {
+    color: var(--text-main);
+    border-color: var(--accent);
+    background: var(--accent);
+}
