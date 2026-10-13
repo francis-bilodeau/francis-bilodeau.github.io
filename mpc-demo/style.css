@@ -409,6 +409,14 @@ input[type=range]:focus {
     font-size: 1.15rem;
 }
 
+.credits p {
+    text-wrap: balance;  /* the line with CRVI's full name wraps evenly on phones */
+}
+
+.credits .credit-org {
+    font-size: 1rem;
+}
+
 .note {
     max-width: 40rem;
     margin: 0 auto;
