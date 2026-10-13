@@ -264,8 +264,7 @@ input[type=range]:focus {
 }
 
 #plot {
-    height: auto;
-    aspect-ratio: 5 / 3.4;  /* x spans 5 m, y 3 m (+ axis margins): keeps the ±1.5 m height range */
+    height: auto;  /* set by fitPlotHeight() in app.js */
 }
 
 .notice {
@@ -329,8 +328,7 @@ input[type=range]:focus {
     position: absolute;
     top: 1rem;
     left: 1rem;
-    right: 1rem;
-    aspect-ratio: 5 / 3.4;
+    right: 1rem;  /* height: the plot's, set by app.js */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -405,6 +403,10 @@ input[type=range]:focus {
 
 .credits a {
     color: var(--text-muted);
+}
+
+.credits .credit-main {
+    font-size: 1.15rem;
 }
 
 .note {

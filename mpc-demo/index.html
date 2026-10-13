@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Interactive Model Predictive Control (MPC)</title>
+    <title>Model Predictive Control (MPC) Demo</title>
     <meta name="description" content="Interactive demo of Model Predictive Control on a double inverted pendulum with real-time obstacle avoidance, running in your browser (WebAssembly).">
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="style.css">
@@ -17,7 +17,7 @@
             <div class="lang-switch" role="group" aria-label="Language / Langue">
                 <button type="button" data-lang="fr">FR</button><button type="button" data-lang="en">EN</button>
             </div>
-            <h1 data-i18n="title">Interactive Model Predictive Control (MPC)</h1>
+            <h1 data-i18n="title">Model Predictive Control (MPC) Demo</h1>
         </header>
 
         <div class="main-content">
@@ -26,7 +26,7 @@
                 <div id="loading" class="loading" role="status"><span class="spinner"></span><span id="loading-text" data-i18n="loading">Loading…</span></div>
                 <div id="notice" class="notice" data-i18n="notice">Solver failed: pendulum reset to its start</div>
                 <div class="actions run-row">
-                    <button id="btn-sim-toggle" class="btn btn-primary" disabled="disabled">Start Sim</button>
+                    <button id="btn-sim-toggle" class="btn btn-primary" disabled="disabled">Start simulation</button>
                     <button id="btn-mpc-toggle" class="btn btn-primary" disabled="disabled">Start MPC</button>
                 </div>
             </div>
@@ -41,7 +41,7 @@
 
                 <div class="control-group">
                     <label for="target_y" data-i18n="target_y">Tip Target Y: <span id="target_y_val">1.0</span></label>
-                    <input type="range" id="target_y" min="-1.5" max="1.5" step="0.1" value="1.0">
+                    <input type="range" id="target_y" min="-1" max="1.5" step="0.1" value="1.0">
                 </div>
 
                 <div class="control-group">
@@ -115,15 +115,15 @@
             </div>
         </div>
 
-        <p class="note" data-i18n="note">The controller has a single control input: the horizontal force on the cart. The pendulum's joints are not driven.</p>
+        <p class="note" data-i18n="note">The controller has a single control input: the horizontal force on the cart. The pendulum's joints are not driven and free to move.</p>
 
         <footer class="credits">
-            <span data-i18n="by">By</span> Francis Bilodeau · <a href="https://www.crvi.ca/" target="_blank" rel="noopener">CRVI</a> ·
-            <a href="gen/licenses.txt" target="_blank" rel="noopener" data-i18n="licences">Open-source licences</a>
+            <p><span data-i18n="by">By</span> <a id="author-link" class="credit-main" href="https://www.linkedin.com/in/bilodeaufrancis/" target="_blank" rel="noopener">Francis Bilodeau</a> ·
+                <a class="credit-main" href="https://www.crvi.ca/" target="_blank" rel="noopener">CRVI</a></p>
         </footer>
     </div>
 
-    <script src="app.js?v=ef938bd"></script>
+    <script src="app.js?v=c711802"></script>
 </body>
 
 </html>
