@@ -108,6 +108,11 @@ header p {
     font-weight: 600;
 }
 
+.control-group label.choice {  /* a radio button and its text, side by side */
+    justify-content: flex-start;
+    gap: 0.5rem;
+}
+
 input[type=range] {
     -webkit-appearance: none;
     width: 100%;
@@ -261,10 +266,16 @@ input[type=range]:focus {
 
 .visualization {
     position: relative;
+    min-width: 0;  /* the grid column may shrink below the plot's current width (rotated phone): app.js then resizes it */
 }
 
 #plot {
     height: auto;  /* set by fitPlotHeight() in app.js */
+}
+
+#scene {
+    position: absolute;  /* place and size: fitScene() in app.js */
+    pointer-events: none;
 }
 
 .notice {

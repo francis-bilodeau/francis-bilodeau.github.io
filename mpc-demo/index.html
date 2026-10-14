@@ -23,6 +23,7 @@
         <div class="main-content">
             <div class="visualization">
                 <div id="plot"></div>
+                <canvas id="scene"></canvas>  
                 <div id="loading" class="loading" role="status"><span class="spinner"></span><span id="loading-text" data-i18n="loading">Loading…</span></div>
                 <div id="notice" class="notice" data-i18n="notice">Solver failed: pendulum reset to its start</div>
                 <div class="actions run-row">
@@ -76,6 +77,7 @@
                     <p>Speed vs real time: <span id="speed">-</span></p>
                     <p>Background solver: <span id="bg">-</span></p>
                     <p>Resets after solver failure: <span id="resets">0</span></p>
+                    <p>Frozen horizon: <span id="frozen">-</span></p>
                     <span id="pick-detail" class="muted">Timing the controller variants on this device…</span>
                     <div class="tuning" hidden>
                         <div class="control-group">
@@ -91,8 +93,55 @@
                             <input type="range" id="cost_du" min="0" max="10" step="0.01">
                         </div>
                         <div class="control-group">
+                            <label for="cost_tip">Tip distance weight q: <span id="cost_tip_val">-</span></label>
+                            <input type="range" id="cost_tip" min="0" max="1500" step="1">
+                        </div>
+                        <div class="control-group">  
+                            Distance cost shape
+                            <label class="choice"><input type="radio" name="dist_shape" value="0" checked="checked"> quadratic q·d² (shipped)</label>
+                            <label class="choice"><input type="radio" name="dist_shape" value="1"> rational q·d²/(1 + d²/s²)</label>
+                            <label class="choice"><input type="radio" name="dist_shape" value="2"> exponential q·s²(1 − e<sup>−d²/s²</sup>)</label>
+                        </div>
+                        <div class="control-group">
+                            <label for="sat_dist">Saturation distance s: <span id="sat_dist_val">-</span> m (max q·s² = <span id="sat_max">-</span>)</label>
+                            <input type="range" id="sat_dist" min="0.05" max="2" step="0.01">
+                        </div>
+                        <div class="control-group">
+                            <label for="cost_speed">Speed penalty: <span id="cost_speed_val">-</span></label>
+                            <input type="range" id="cost_speed" min="-3" max="2" step="0.01" data-log="1">
+                        </div>
+                        <div class="control-group">
+                            <label for="shape_angle">Angle shaping: <span id="shape_angle_val">-</span></label>
+                            <input type="range" id="shape_angle" min="0" max="300" step="1">
+                        </div>
+                        <div class="control-group">
+                            <label for="shape_terminal">Terminal multiplier: <span id="shape_terminal_val">-</span></label>
+                            <input type="range" id="shape_terminal" min="0" max="30" step="0.01">
+                        </div>
+                        <div class="control-group">
+                            <label for="cost_speed_terminal">Terminal speed penalty: <span id="cost_speed_terminal_val">-</span></label>
+                            <input type="range" id="cost_speed_terminal" min="0" max="200" step="0.1">
+                        </div>
+                        <div class="control-group">
+                            <label for="boost_energy">Energy boost when frozen: <span id="boost_energy_val">-</span> (0 = off)</label>
+                            <input type="range" id="boost_energy" min="0" max="2000" step="1">
+                        </div>
+                        <div class="control-group">
                             <label for="horizon">Horizon N: <span id="horizon_val">-</span></label>
                             <input type="range" id="horizon" min="0" max="0" step="1">
+                        </div>
+                        <div class="control-group bg-knob">
+                            <label for="bg_horizon">Background horizon N: <span id="bg_horizon_val">-</span></label>
+                            <input type="range" id="bg_horizon" min="0" max="0" step="1">
+                        </div>
+                        <div class="control-group bg-knob">
+                            <label for="bg_iter">Background max iterations: <span id="bg_iter_val">-</span></label>
+                            <input type="range" id="bg_iter" min="5" max="200" step="5">
+                        </div>
+                        <div class="control-group bg-knob">  
+                            Offer judged on
+                            <label class="choice"><input type="radio" name="adopt_rule" value="overlap" checked="checked"> real-time horizon (shipped)</label>
+                            <label class="choice"><input type="radio" name="adopt_rule" value="total"> background horizon</label>
                         </div>
                         <div class="control-group">
                             <label for="dt">First interval: <span id="dt_val">-</span> ms</label>
@@ -123,7 +172,7 @@
         </footer>
     </div>
 
-    <script src="app.js?v=3746f66"></script>
+    <script src="app.js?v=8ce014d"></script>
 </body>
 
 </html>
